@@ -3,6 +3,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ```sh
+sudo docker build . -t '<image_name>'
 sudo docker run -p 3001:3001 -d <image_name>
 ```
 
