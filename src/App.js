@@ -5,7 +5,7 @@ import SectionHeading from "./components/SectionHeading";
 import './App.css';
 
 
-const base_url = '35.221.157.191'
+const base_url = '35.234.8.96'
 
 class App extends Component{
   state = {}
