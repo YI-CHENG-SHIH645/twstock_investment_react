@@ -1,25 +1,58 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import GridItem from "./components/GridItem";
+import PopupWindow from "./components/PopupWindow";
+import SectionHeading from "./components/SectionHeading";
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const base_url = '35.221.157.191'
+
+class App extends Component{
+  state = {}
+
+  componentDidMount() {
+    fetch(`http://${base_url}/info.json`)
+        .then(response => response.json())
+        .then(data => this.setState({"latest_signal": data['latest_signal']}))
+    fetch(`http://${base_url}/info.json`)
+        .then(response => response.json())
+        .then(data => this.setState({"strategies_summary": data['strategies_summary']}))
+    fetch(`http://${base_url}/info.json`)
+        .then(response => response.json())
+        .then(data => {
+            this.setState({"trading_record": data['trading_record']});
+        })
+  }
+
+  renderItems = (summaries) => {
+    return summaries.map((item, idx) =>
+      <GridItem key={idx} summary={item} ith={idx+1}/>
+    )
+  }
+
+  renderWindows = (summaries, signal, records) => {
+    return summaries.map((item, idx) =>
+      <PopupWindow key={idx} summary={item} signal={signal[idx]} records={records[idx].records} ith={idx+1}/>
+    )
+  }
+
+  render() {
+    return (
+        <div>
+          <section className="page-section portfolio" id="portfolio">
+            <div className="container">
+              <SectionHeading title={"策略回測"}/>
+              <div className="row">
+              {this.state.strategies_summary && this.renderItems(this.state.strategies_summary)}
+              </div>
+            </div>
+          </section>
+          {this.state.latest_signal && this.state.strategies_summary && this.state.trading_record
+          && this.renderWindows(this.state.strategies_summary, this.state.latest_signal, this.state.trading_record)}
+        </div>
+    )
+  }
 }
 
 export default App;
+export { base_url };
